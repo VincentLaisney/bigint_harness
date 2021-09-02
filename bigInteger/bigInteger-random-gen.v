@@ -39,9 +39,11 @@ fn do_calculation(a big.Integer, b big.Integer, op byte) big.Integer {
 	`*`
 		{ result = a * b }
 	`/`
-		{ if big.integer_from_i64(0) != big.zero_int {
-			result = a / b
-		} }
+		{ 
+			if b != big.zero_int {
+				result = a / b
+			} 
+		}
 	`%`
 		{ result = a % b }
 	else {}
