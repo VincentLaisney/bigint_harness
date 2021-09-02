@@ -1,5 +1,5 @@
 import rand
-import gmp
+import libbf.big.integer as big
 import time
 import os
 
@@ -18,19 +18,18 @@ fn gen_rnd_str(n int, length int) []string  {
 	return num
 }
 
-fn bigint_str_to_arr(str_arr []string) []gmp.Bigint  {
-	mut res := []gmp.Bigint{}
+fn bigint_str_to_arr(str_arr []string) []big.Bigint  {
+	mut res := []big.Bigint{}
 	for i:=0; i<str_arr.len; i++ {
 		stri:=str_arr[i]
-		if z := gmp.from_str_base(stri, 10) {
-			res << z
-		}
+		z := big.from_str_base(stri, 10)
+		res << z
 	}
 	return res
 }
 
-fn do_calculation(a gmp.Bigint, b gmp.Bigint, op byte) gmp.Bigint {
-	mut result := gmp.new()
+fn do_calculation(a big.Bigint, b big.Bigint, op byte) big.Bigint {
+	mut result := big.new()
 	match op {
 	`+`
 		{ result = a + b }
@@ -39,7 +38,7 @@ fn do_calculation(a gmp.Bigint, b gmp.Bigint, op byte) gmp.Bigint {
 	`*`
 		{ result = a * b }
 	`/`
-		{ if gmp.cmp(b, gmp.from_i64(0)) != 0 {
+		{ if big.cmp(b, big.from_i64(0)) != 0 {
 			result = a / b
 		} }
 	`%`
@@ -49,7 +48,7 @@ fn do_calculation(a gmp.Bigint, b gmp.Bigint, op byte) gmp.Bigint {
 	return result
 }
 
-fn do_calc_and_print(a gmp.Bigint, b gmp.Bigint, op byte) gmp.Bigint {
+fn do_calc_and_print(a big.Bigint, b big.Bigint, op byte) big.Bigint {
 	result := do_calculation(a, b, op)
 	println(a.str() + " ${op.ascii_str()} " + b.str() + " = " + result.str())
 	return result
@@ -72,15 +71,13 @@ fn main()  {
 		// println(os.args[1])
 		rnd_args := do_read_file(os.args[1])
 		// println(rnd_args)
-		for line in rnd_args {
-			a := line[0]
-			op := line[1]
-			b := line[2]
-			if a_bi := gmp.from_str(a) {
-				if b_bi := gmp.from_str(b) {
-					do_calc_and_print(a_bi, b_bi, op[0])
-				}
-			}
+		for elt in rnd_args {
+			a := elt[0]
+			op := elt[1]
+			b := elt[2]
+			a_bi := big.from_str(a)
+			b_bi := big.from_str(b)
+			do_calc_and_print(a_bi, b_bi, op[0])
 		}
 		exit(0)	
 	}

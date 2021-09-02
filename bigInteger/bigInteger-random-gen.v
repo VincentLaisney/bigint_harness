@@ -1,5 +1,5 @@
 import rand
-import gmp
+import math.big
 import time
 import os
 
@@ -18,19 +18,19 @@ fn gen_rnd_str(n int, length int) []string  {
 	return num
 }
 
-fn bigint_str_to_arr(str_arr []string) []gmp.Bigint  {
-	mut res := []gmp.Bigint{}
+fn bigint_str_to_arr(str_arr []string) []big.Integer  {
+	mut res := []big.Integer{}
 	for i:=0; i<str_arr.len; i++ {
 		stri:=str_arr[i]
-		if z := gmp.from_str_base(stri, 10) {
+		if z := big.integer_from_radix(stri, 10) {
 			res << z
 		}
 	}
 	return res
 }
 
-fn do_calculation(a gmp.Bigint, b gmp.Bigint, op byte) gmp.Bigint {
-	mut result := gmp.new()
+fn do_calculation(a big.Integer, b big.Integer, op byte) big.Integer {
+	mut result := big.Integer{}
 	match op {
 	`+`
 		{ result = a + b }
@@ -39,7 +39,7 @@ fn do_calculation(a gmp.Bigint, b gmp.Bigint, op byte) gmp.Bigint {
 	`*`
 		{ result = a * b }
 	`/`
-		{ if gmp.cmp(b, gmp.from_i64(0)) != 0 {
+		{ if big.integer_from_i64(0) != big.zero_int {
 			result = a / b
 		} }
 	`%`
@@ -49,7 +49,7 @@ fn do_calculation(a gmp.Bigint, b gmp.Bigint, op byte) gmp.Bigint {
 	return result
 }
 
-fn do_calc_and_print(a gmp.Bigint, b gmp.Bigint, op byte) gmp.Bigint {
+fn do_calc_and_print(a big.Integer, b big.Integer, op byte) big.Integer {
 	result := do_calculation(a, b, op)
 	println(a.str() + " ${op.ascii_str()} " + b.str() + " = " + result.str())
 	return result
@@ -76,8 +76,8 @@ fn main()  {
 			a := line[0]
 			op := line[1]
 			b := line[2]
-			if a_bi := gmp.from_str(a) {
-				if b_bi := gmp.from_str(b) {
+			if a_bi := big.integer_from_string(a) {
+				if b_bi := big.integer_from_string(b) {
 					do_calc_and_print(a_bi, b_bi, op[0])
 				}
 			}
